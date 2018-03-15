@@ -1,1 +1,4 @@
+importFrom("graphics", "lines", "plot")
+importFrom("stats", "mad", "median", "optim", "quantile", "rnorm",
+             "runif")
 export(baselinefit,pkdecompint,pkdecomp, diffractogram)
