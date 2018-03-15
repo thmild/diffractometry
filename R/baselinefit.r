@@ -3,7 +3,7 @@
 
 ### default Werte: ###
 #
-### tau = 2.5 ### tau = 2.0 für mehr Peaks ###
+### tau = 2.5 ### tau = 2.0 fuer mehr Peaks ###
 #
 ### gam = 1 ###
 #
@@ -12,7 +12,7 @@
 ### maxwdth = 5 ###
 
 "baselinefit" <- function(data,tau=2.5,gam=1, scl.factor=1.2, maxwdth=5){
-  #Abfrage äquidistante Winkelwerte für 2Theta
+  #Abfrage aequidistante Winkelwerte fuer 2Theta
   if(any(diff(data[,1], 1, 2) > 10^-10)) 
     stop("2 theta values have to be equidistant")
   #Abfrage ob NAs vorhanden
@@ -400,7 +400,7 @@
 #
 # x: output von extrempmreg.fn fuer TS
 # y: output von wsspoiss
-# maxwdth: maximale Peakbreite, Standardwert= 5°
+# maxwdth: maximale Peakbreite, Standardwert= 5 deg
 # xval: x-Koordinaten der Daten
 # xex: x-Koordinaten der in extrempmreg.fn bestimmten Peakintervall
 #
@@ -502,7 +502,7 @@
     #
     ###
     np <- length(pindl)    # Anzahl Peaks
-    n <- length(data.x)      # Datenlänge
+    n <- length(data.x)      # Datenlaenge
     basisl <- double(n)
     basisl[-ind] <- anp
     peaks <- double(n)

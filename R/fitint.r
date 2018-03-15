@@ -20,10 +20,10 @@ function(par,d,n) {
 	lokvek<-log(diff(lokvek[2:length(lokvek)])/diff(lokvek[1:(length(lokvek)-1)]))
 
 	for (i in 1:k) {
-		partr[(i-1)*4+3]<-log(par[(i-1)*4+3])								#Höhe
-		partr[(i-1)*4+4]<-log((par[(i-1)*4+4]-1)/(1000-par[(i-1)*4+4]))					#Shape
-		partr[(i-1)*4+5]<-lokvek[i]									#Lok
-		partr[(i-1)*4+6]<-log(par[(i-1)*4+6])								#Breite
+		partr[(i-1)*4+3]<-log(par[(i-1)*4+3])								#height
+		partr[(i-1)*4+4]<-log((par[(i-1)*4+4]-1)/(1000-par[(i-1)*4+4]))					#Swidth
+		partr[(i-1)*4+5]<-lokvek[i]									#location
+		partr[(i-1)*4+6]<-log(par[(i-1)*4+6])								#width
 	}
 		partr
 }
@@ -36,10 +36,10 @@ function(par,d,n) {
 	partr[2]<-par[2]
 
 	for (i in 1:k) {
-		partr[(i-1)*4+3]<-log(par[(i-1)*4+3])								#H�he
-		partr[(i-1)*4+4]<-log((par[(i-1)*4+4]-1)/(1000-par[(i-1)*4+4]))				#Shape
-		partr[(i-1)*4+5]<-par[(i-1)*4+5]								#Lok
-		partr[(i-1)*4+6]<-log(par[(i-1)*4+6])								#Breite
+		partr[(i-1)*4+3]<-log(par[(i-1)*4+3])								#height
+		partr[(i-1)*4+4]<-log((par[(i-1)*4+4]-1)/(1000-par[(i-1)*4+4]))				#shape
+		partr[(i-1)*4+5]<-par[(i-1)*4+5]								#location
+		partr[(i-1)*4+6]<-log(par[(i-1)*4+6])								#width
 	}
 		partr
 }
@@ -89,7 +89,7 @@ partransoutp<-function(par,left,h) {
 
 
 
-### Funktionen f?r MRB 
+### functions to check multiresolution conditions
 
 mr<-function(resid) .C("multires",as.double(resid),as.double(1),as.integer(length(resid)),PACKAGE="diffractometry")[[2]]
 
@@ -114,7 +114,7 @@ function(n,q,erg) {
 
 
 
-### Anpassung f?r 1 Interval mit gegebener Anz. Kerne
+### fit for 1 interval with given number of kernels 
 
 
 `pkdecompint` <-
@@ -126,10 +126,10 @@ function(baslfit, intnum, k, thresh=0, alpha=0.1, heterosk=TRUE, maxiter=10000, 
   # Check whether parameter intnum is a reasonable number of peaks
   if(intnum > length(baslfit$npks))
     stop(c("value intnum must be between 1 and ", length(baslfit$npks)))
-	y<-baslfit$pks[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]]		# Daten werden extrahiert
-	x<-baslfit$x[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]]		# Daten werden extrahiert
+	y<-baslfit$pks[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]]		# extracting data
+	x<-baslfit$x[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]]		# extracting data
 	gwidth<-diff(x)[1]
-	gewichte<-rep(1,length(y))																							# Gewichte werden mi 1 initialisiert (f�r den Fall w=F)
+	gewichte<-rep(1,length(y))																							# initialise weights = 1 (for w=F)
 if (heterosk==FALSE) {			
 	sig<-baslfit$spl$sigma
 	stand2<-sqrt(baslfit$pmg$fn[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]])
@@ -143,7 +143,7 @@ if (heterosk==TRUE) {
 	dispers<-1
 }
 
-basl<-(baslfit$baseline$basisl[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]])		# Basislinie
+basl<-(baslfit$baseline$basisl[baslfit$indlsep[intnum]:baslfit$indrsep[intnum]])		# baseline
 
 versch<-baselim[1]*mean(basl)
 
@@ -154,20 +154,20 @@ n<-length(y)
 
 if (thresh==0) {
 	thresh<-mrquant(n,(1-alpha),mr)
-	if (length(thresh)!=1) thresh<-mrqsim(n,alpha)															}						# Falls keine Schranke angegeben, wird simuliert
+	if (length(thresh)!=1) thresh<-mrqsim(n,alpha)															}						# if threshhold is not given, simulate
 
-auswertung<-function(para) {																										# Hier wird der C-Code aufgerufen, um f�r gegebene Parameter
-	erg<-.C("p7fit",as.double(y),double(n),double(n),as.double(para),double(4*k+2),double(1),as.double(versch),	# die Anpassung und RSS auszurechnen
+auswertung<-function(para) {																										# call C code to calculate RSS for given parameter values
+	erg<-.C("p7fit",as.double(y),double(n),double(n),as.double(para),double(4*k+2),double(1),as.double(versch),	
 	as.integer(n),as.integer(k),as.integer(1),as.double(gewichte),PACKAGE="diffractometry")
 	
 	list(fit=erg[[2]], resid=erg[[3]], rss=erg[[6]])
 	}
 
-ausw2<-function(para){																															# Das selbe, es wird nur die RSS ausgeben (f�r die Optimierung)
+ausw2<-function(para){																															# Same, but for optimization just output RSS
 	auswertung(para)[[3]]
 	}
 
-	lower<-partrans2( c( -0.75*versch,-bslope, rep(c(0.1,1.00001, log(1/(n-k-1)) ,1),k) )  ,versch,n)    # Schranken f�r den Suchraum
+	lower<-partrans2( c( -0.75*versch,-bslope, rep(c(0.1,1.00001, log(1/(n-k-1)) ,1),k) )  ,versch,n)    # bound for search space
  	upper<-partrans2( c( 0.75*versch,bslope, rep(c(1.4*max(y),500, log(n-k-1) ,n/2),k) ) ,versch,n)    
 
 
@@ -176,7 +176,7 @@ l<-0
 best.par<-rep(0,4*k+2)
 best.rss<-Inf
 
-while(fit.not.ok==1 && l<maxiter) {																		# Suche solange, bis MRB erf�llt oder maxiter erreicht
+while(fit.not.ok==1 && l<maxiter) {																		# search until mr conditions are fulfilled
 
 l<-l+1
 
@@ -265,7 +265,7 @@ function(baslfit,intnum=0, alpha=0.1, maxiter1=500, maxiter=10000, hmax=5, maxso
 		thresh<-tfout$thresh
 		}
 		
-		if (maxsolutions>1 & accept==TRUE) {		#prodcue maxsolutions solutions, if more than one is requested
+		if (maxsolutions>1 & accept==TRUE) {		#produce maxsolutions solutions, if more than one is requested
 		for (m in 2:maxsolutions) {
 			if (h==1) tfout<-pkdecompint(baslfit,z,(h-1),thresh,alpha,heterosk=heterosk,baselim=baselim,dispers=dispers,maxiter=maxiter1)
 			if (h>1) tfout<-pkdecompint(baslfit,z,(h-1),thresh,alpha,heterosk=heterosk,baselim=baselim,dispers=dispers,maxiter)	

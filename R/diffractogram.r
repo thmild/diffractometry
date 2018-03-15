@@ -1,5 +1,5 @@
 diffractogram<-function(data, tau=2.5,gam=1, scl.factor=1.2, maxwdth=5, intnum=0, alpha=0.1, maxiter1=500, maxiter=10000, hmax=5, maxsolutions=3,heterosk=TRUE,baselim=c(0.05,5),dispers=1) {
-  #Abfrage äquidistante Winkelwerte für 2Theta
+  #Abfrage aequidistante Winkelwerte fuer 2Theta
   if(any(diff(data[,1], 1, 2) > 10^-10)) 
     stop("2 theta values have to be equidistant")
   #Abfrage ob NAs vorhanden

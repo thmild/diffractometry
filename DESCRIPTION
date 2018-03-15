@@ -1,7 +1,6 @@
 Package: diffractometry
 Type: Package
-Title: Baseline identification and peak decomposition for x-ray
-        diffractograms
+Title: Baseline Identification and Peak Decomposition for x-Ray Diffractograms
 Version: 0.1-9
 Date: 2018-03-15
 Author: P.L. Davies, U. Gather, M. Meise, D.Mergel, T. Mildenberger. Additional Code by T. Bernholt and T. Hofmeister
