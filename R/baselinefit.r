@@ -360,8 +360,7 @@
         stop("y and weights lengths differ")
     }
     if((mr==2)&&(missing(nit))){
-      print("Number of iterations not specified!")
-      break
+      stop("Number of iterations not specified!")
     }
     else
       if(missing(nit))
